@@ -56,7 +56,7 @@ python manage.py migrate
 python manage.py runserver
 
 
-## 📸 Screenshots
+# 📸 Screenshots
 
 All screenshots are available in the **screenshots** folder of this repository.  
 Please navigate to that folder to view login, product listing, profile, and other pages.
