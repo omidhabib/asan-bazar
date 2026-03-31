@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% block title %}Messages - AfghaniStore{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto">
+    <h2 class="text-lg font-bold text-gray-800 mb-4">💬 Messages</h2>
+
+    {% if conv_data %}
+    <div class="space-y-2">
+        {% for item in conv_data %}
+        <a href="{% url 'conversation_detail' item.conversation.pk %}" class="flex items-center gap-4 bg-white rounded-2xl p-4 shadow-sm hover:shadow-md transition-shadow">
+            <!-- Avatar -->
+            <div class="w-12 h-12 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-700 font-bold text-lg shrink-0 relative overflow-hidden">
+                {% if item.other_user.profile_photo %}
+                <img src="{{ item.other_user.profile_photo.url }}" alt="{{ item.other_user.full_name }}" class="w-full h-full object-cover">
+                {% else %}
+                {{ item.other_user.full_name|slice:":1"|upper }}
+                {% endif %}
+                {% if item.unread > 0 %}
+                <span class="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white rounded-full text-xs flex items-center justify-center border-2 border-white">{{ item.unread }}</span>
+                {% endif %}
+            </div>
+            <div class="flex-grow min-w-0">
+                <div class="flex justify-between items-center">
+                    <p class="font-bold text-gray-800">{{ item.other_user.full_name }}</p>
+                    {% if item.last_message %}
+                    <p class="text-xs text-gray-400">{{ item.last_message.timestamp|timesince }} ago</p>
+                    {% endif %}
+                </div>
+                {% if item.conversation.ad %}
+                <p class="text-xs text-indigo-500 truncate">📢 {{ item.conversation.ad.title }}</p>
+                {% endif %}
+                {% if item.last_message %}
+                <p class="text-sm text-gray-500 truncate mt-0.5">{{ item.last_message.content }}</p>
+                {% else %}
+                <p class="text-sm text-gray-400 italic">No messages yet</p>
+                {% endif %}
+            </div>
+            <svg class="w-4 h-4 text-gray-300 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        </a>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="bg-white rounded-2xl p-10 text-center shadow-sm">
+        <p class="text-4xl mb-3">💬</p>
+        <p class="text-gray-500 font-medium">No conversations yet</p>
+        <p class="text-gray-400 text-sm mt-1">Browse ads and tap "Message Seller" to start a chat</p>
+        <a href="{% url 'home' %}" class="mt-4 inline-block bg-indigo-600 text-white px-6 py-2 rounded-full font-semibold hover:bg-indigo-700 transition">Browse Ads</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

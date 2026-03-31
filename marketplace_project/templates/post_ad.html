@@ -1,0 +1,176 @@
+{% extends 'base.html' %}
+{% block title %}{{ t.PostAd }} - AfghaniStore{% endblock %}
+
+{% block extra_head %}
+<!-- Leaflet Fallback Assets -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+{% endblock %}
+
+{% block content %}
+<div class="max-w-lg mx-auto">
+    <div class="bg-white rounded-2xl shadow-sm p-6">
+        <h2 class="text-xl font-extrabold text-gray-800 mb-5">📢 {{ t.PostNewAd }}</h2>
+
+        <form method="POST" action="{% url 'post_ad' %}" enctype="multipart/form-data" class="space-y-4">
+            {% csrf_token %}
+
+            <!-- Form Errors -->
+            {% if form.non_field_errors %}
+            <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
+                {% for error in form.non_field_errors %}
+                <p class="text-sm">{{ error }}</p>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <!-- Title -->
+            <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-1">{{ t.AdTitle }}</label>
+                {{ form.title }}
+                {% if form.title.errors %}<p class="text-red-500 text-xs mt-1">{{ form.title.errors.0 }}</p>{% endif %}
+            </div>
+
+            <!-- Price + Category -->
+            <div class="flex gap-3">
+                <div class="w-1/2">
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">{{ t.PriceAFN }}</label>
+                    {{ form.price }}
+                    {% if form.price.errors %}<p class="text-red-500 text-xs mt-1">{{ form.price.errors.0 }}</p>{% endif %}
+                </div>
+                <div class="w-1/2">
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">{{ t.CategorySelect }}</label>
+                    {{ form.category }}
+                    {% if form.category.errors %}<p class="text-red-500 text-xs mt-1">{{ form.category.errors.0 }}</p>{% endif %}
+                </div>
+            </div>
+
+            <!-- Description -->
+            <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-1">{{ t.DescriptionLabel }}</label>
+                {{ form.description }}
+                {% if form.description.errors %}<p class="text-red-500 text-xs mt-1">{{ form.description.errors.0 }}</p>{% endif %}
+            </div>
+
+            <!-- Image -->
+            <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-1">{{ t.Photo }}</label>
+                {{ form.image }}
+                {% if form.image.errors %}<p class="text-red-500 text-xs mt-1">{{ form.image.errors.0 }}</p>{% endif %}
+                <p class="text-xs text-gray-400 mt-1">{{ t.PhotoHint }}</p>
+            </div>
+
+            <!-- Phone + Location -->
+            <div class="grid grid-cols-2 gap-3">
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">{{ t.ContactNumber }}</label>
+                    {{ form.phone_number }}
+                    {% if form.phone_number.errors %}<p class="text-red-500 text-xs mt-1">{{ form.phone_number.errors.0 }}</p>{% endif %}
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">{{ t.CityLabel }}</label>
+                    {{ form.city }}
+                    {% if form.city.errors %}<p class="text-red-500 text-xs mt-1">{{ form.city.errors.0 }}</p>{% endif %}
+                </div>
+                <div class="col-span-2">
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">{{ t.ExactAddress }}</label>
+                    {{ form.address }}
+                    {% if form.address.errors %}<p class="text-red-500 text-xs mt-1">{{ form.address.errors.0 }}</p>{% endif %}
+                </div>
+            </div>
+
+            <!-- Map Picker -->
+            <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-1">{{ t.SelectOnMap }}</label>
+                <div id="map-picker" class="w-full h-64 rounded-xl border border-gray-200 bg-gray-50 overflow-hidden"></div>
+                <p class="text-[10px] text-gray-400 mt-1 italic">{{ t.MapHint }}</p>
+                {{ form.latitude }}
+                {{ form.longitude }}
+            </div>
+
+            <button type="submit" class="w-full bg-indigo-600 text-white font-bold py-3 rounded-xl hover:bg-indigo-700 active:scale-95 transition-all mt-2">
+                🚀 {{ t.PublishAd }}
+            </button>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+<style>
+    /* Style Django form inputs */
+    input[type=text], input[type=number], textarea, select {
+        display: block; width: 100%; padding: 0.7rem 1rem;
+        border: 1px solid #e5e7eb; border-radius: 0.75rem;
+        background: #f9fafb; font-size: 0.875rem;
+        transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    input:focus, textarea:focus, select:focus {
+        outline: none; border-color: #6366f1;
+        box-shadow: 0 0 0 3px rgba(99,102,241,0.15); background: white;
+    }
+    textarea { resize: vertical; min-height: 100px; }
+</style>
+{% block extra_js %}
+<script src="/static/js/location-autocomplete.js"></script>
+<script async src="https://maps.googleapis.com/maps/api/js?key={{ GOOGLE_MAPS_API_KEY }}&callback=initMapPicker" onerror="googleMapsError()"></script>
+<script>
+    let map;
+    let marker;
+    let isGoogleMaps = false;
+
+    window.gm_authFailure = function() { googleMapsError(); };
+
+    function googleMapsError() {
+        if (isGoogleMaps) return;
+        initLeafletPicker();
+    }
+
+    function initMapPicker() {
+        isGoogleMaps = true;
+        const defaultLocation = { lat: 34.5553, lng: 69.2075 };
+        const latInput = document.querySelector('input[name="latitude"]');
+        const lngInput = document.querySelector('input[name="longitude"]');
+
+        try {
+            map = new google.maps.Map(document.getElementById("map-picker"), {
+                zoom: 6,
+                center: defaultLocation,
+            });
+
+            map.addListener("click", (mapsMouseEvent) => {
+                const position = mapsMouseEvent.latLng;
+                if (marker) {
+                    marker.setPosition(position);
+                } else {
+                    marker = new google.maps.Marker({ position: position, map: map });
+                }
+                latInput.value = position.lat().toFixed(6);
+                lngInput.value = position.lng().toFixed(6);
+            });
+        } catch (e) {
+            googleMapsError();
+        }
+    }
+
+    function initLeafletPicker() {
+        const center = [34.5553, 69.2075];
+        const latInput = document.querySelector('input[name="latitude"]');
+        const lngInput = document.querySelector('input[name="longitude"]');
+
+        map = L.map('map-picker').setView(center, 6);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+
+        map.on('click', function(e) {
+            if (marker) {
+                marker.setLatLng(e.latlng);
+            } else {
+                marker = L.marker(e.latlng).addTo(map);
+            }
+            latInput.value = e.latlng.lat.toFixed(6);
+            lngInput.value = e.latlng.lng.toFixed(6);
+        });
+    }
+
+    setTimeout(() => { if (!isGoogleMaps && typeof L !== 'undefined') googleMapsError(); }, 5000);
+</script>
+{% endblock %}

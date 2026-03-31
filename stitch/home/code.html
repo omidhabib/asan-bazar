@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+
+<html class="light" dir="rtl" lang="fa"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;700;800&amp;family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary-container": "#2b7a78",
+              "on-secondary": "#ffffff",
+              "error-container": "#ffdad6",
+              "surface": "#f9f9f9",
+              "surface-variant": "#e2e2e2",
+              "on-primary": "#ffffff",
+              "primary": "#00615f",
+              "on-secondary-fixed": "#0f1e22",
+              "on-error-container": "#93000a",
+              "tertiary-fixed": "#ffdbcc",
+              "on-surface": "#1a1c1c",
+              "surface-container-high": "#e8e8e8",
+              "surface-container-lowest": "#ffffff",
+              "surface-container-low": "#f3f3f3",
+              "primary-fixed": "#a5f0ed",
+              "on-tertiary": "#ffffff",
+              "on-secondary-fixed-variant": "#3b494e",
+              "on-primary-fixed-variant": "#00504e",
+              "background": "#f9f9f9",
+              "tertiary-fixed-dim": "#ffb694",
+              "on-primary-fixed": "#00201f",
+              "error": "#ba1a1a",
+              "inverse-primary": "#89d3d1",
+              "on-tertiary-fixed": "#351000",
+              "surface-bright": "#f9f9f9",
+              "secondary-container": "#d3e2e9",
+              "secondary-fixed": "#d6e5ec",
+              "on-background": "#1a1c1c",
+              "tertiary-container": "#9e5f41",
+              "tertiary": "#81472b",
+              "surface-container": "#eeeeee",
+              "secondary-fixed-dim": "#bac9cf",
+              "outline-variant": "#bec9c7",
+              "surface-dim": "#dadada",
+              "on-error": "#ffffff",
+              "surface-tint": "#126967",
+              "inverse-on-surface": "#f1f1f1",
+              "primary-fixed-dim": "#89d3d1",
+              "on-tertiary-fixed-variant": "#6e381d",
+              "on-secondary-container": "#56656b",
+              "outline": "#6f7978",
+              "secondary": "#526166",
+              "on-primary-container": "#befffc",
+              "surface-container-highest": "#e2e2e2",
+              "on-surface-variant": "#3f4948",
+              "on-tertiary-container": "#fff0eb",
+              "inverse-surface": "#2f3131"
+            },
+            fontFamily: {
+              "headline": ["Plus Jakarta Sans"],
+              "body": ["Inter"],
+              "label": ["Inter"]
+            },
+            borderRadius: {"DEFAULT": "1rem", "lg": "2rem", "xl": "3rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .persian-text { line-height: 1.8; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl shadow-sm dark:shadow-none">
+<div class="flex flex-row-reverse justify-between items-center w-full px-6 py-4">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-on-surface-variant">menu</span>
+<h1 class="text-xl font-black text-[#17252A] dark:text-white ml-2 font-['Plus_Jakarta_Sans']">افغان بازار</h1>
+</div>
+<div class="hidden md:flex flex-grow max-w-xl mx-8">
+<div class="relative w-full">
+<input class="w-full bg-surface-container-low border-none rounded-xl py-3 px-12 text-right focus:ring-2 focus:ring-primary/20 transition-all" placeholder="جستجو در همه آگهی‌ها..." type="text"/>
+<span class="material-symbols-outlined absolute right-4 top-3 text-outline">search</span>
+</div>
+</div>
+<button class="text-[#2B7A78] dark:text-[#3AAFA9] font-['Plus_Jakarta_Sans'] font-bold text-right active:scale-95 duration-200">
+                ورود | ثبت نام
+            </button>
+</div>
+<div class="bg-slate-100 dark:bg-slate-800 h-[1px] w-full"></div>
+</header>
+<main class="pt-24 pb-32 px-6">
+<!-- Mobile Search (Visible only on mobile) -->
+<div class="md:hidden mb-8">
+<div class="relative w-full">
+<input class="w-full bg-surface-container-lowest border-none rounded-xl py-4 px-12 text-right shadow-[0px_12px_32px_rgba(26,28,28,0.04)] focus:ring-2 focus:ring-primary/20" placeholder="جستجو در افغان بازار" type="text"/>
+<span class="material-symbols-outlined absolute right-4 top-4 text-primary">search</span>
+</div>
+</div>
+<!-- Hero Category Grid -->
+<section class="mb-12">
+<div class="grid grid-cols-4 md:grid-cols-5 gap-4">
+<div class="flex flex-col items-center gap-2 group cursor-pointer">
+<div class="w-16 h-16 rounded-2xl bg-surface-container-lowest shadow-sm flex items-center justify-center group-active:scale-90 transition-transform">
+<span class="material-symbols-outlined text-primary text-3xl">smartphone</span>
+</div>
+<span class="text-xs font-medium text-on-surface-variant">موبایل</span>
+</div>
+<div class="flex flex-col items-center gap-2 group cursor-pointer">
+<div class="w-16 h-16 rounded-2xl bg-surface-container-lowest shadow-sm flex items-center justify-center group-active:scale-90 transition-transform">
+<span class="material-symbols-outlined text-primary text-3xl">directions_car</span>
+</div>
+<span class="text-xs font-medium text-on-surface-variant">خودرو</span>
+</div>
+<div class="flex flex-col items-center gap-2 group cursor-pointer">
+<div class="w-16 h-16 rounded-2xl bg-surface-container-lowest shadow-sm flex items-center justify-center group-active:scale-90 transition-transform">
+<span class="material-symbols-outlined text-primary text-3xl">home</span>
+</div>
+<span class="text-xs font-medium text-on-surface-variant">املاک</span>
+</div>
+<div class="flex flex-col items-center gap-2 group cursor-pointer">
+<div class="w-16 h-16 rounded-2xl bg-surface-container-lowest shadow-sm flex items-center justify-center group-active:scale-90 transition-transform">
+<span class="material-symbols-outlined text-primary text-3xl">work</span>
+</div>
+<span class="text-xs font-medium text-on-surface-variant">استخدام</span>
+</div>
+<div class="hidden md:flex flex-col items-center gap-2 group cursor-pointer">
+<div class="w-16 h-16 rounded-2xl bg-surface-container-lowest shadow-sm flex items-center justify-center group-active:scale-90 transition-transform">
+<span class="material-symbols-outlined text-primary text-3xl">laptop_mac</span>
+</div>
+<span class="text-xs font-medium text-on-surface-variant">لوازم برقی</span>
+</div>
+</div>
+</section>
+<!-- Asymmetric Featured Banner -->
+<section class="mb-12">
+<div class="relative h-48 rounded-lg overflow-hidden bg-primary-container group">
+<img alt="Featured deals" class="w-full h-full object-cover mix-blend-overlay opacity-40 transition-transform duration-700 group-hover:scale-105" data-alt="vibrant afghan marketplace scene with textiles and spices in soft focused background and warm sunbeams" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDuqDEc4P98XmQHisH-vfaVNq7e4tkKlxn7vyhOt9ayObUp6NP1l5nK7Mdt6ta8YVPKbGfnCb06afvHw5eDzbezygQADtFX0nj47rm1rxkyLGInJBZfoIvARlV7Aw94FZMT3mgcScaHPxbU7rDZf8W2pYI0qqbHHoXFJo12ahq2fw4L2XKpZW1uwPPqjg_wQTotw9B0SCBxtfT9vry3jENRZhJ5SikacHQkjozWgfRCGfS3n7M8VrPDlA6sM1juQq9Fq3LXMsOOaro"/>
+<div class="absolute inset-0 p-8 flex flex-col justify-center items-start text-right">
+<h2 class="text-2xl font-bold text-white mb-2 font-headline">بازار محلی در دستان شما</h2>
+<p class="text-white/80 text-sm max-w-xs persian-text">بهترین قیمت‌ها را در بزرگترین جامعه آنلاین خرید و فروش افغانستان تجربه کنید.</p>
+</div>
+</div>
+</section>
+<!-- Latest Ads Grid -->
+<section>
+<div class="flex justify-between items-center mb-6">
+<h3 class="text-lg font-bold font-headline text-secondary">آخرین آگهی‌ها</h3>
+<button class="text-primary text-sm font-semibold flex items-center gap-1">
+                    مشاهده همه
+                    <span class="material-symbols-outlined text-sm">chevron_left</span>
+</button>
+</div>
+<div class="grid grid-cols-2 lg:grid-cols-4 gap-6">
+<!-- Ad Card 1 -->
+<div class="bg-surface-container-lowest rounded-lg overflow-hidden flex flex-col shadow-[0px_4px_16px_rgba(0,0,0,0.02)] active:scale-[0.98] transition-all">
+<div class="relative aspect-square">
+<img alt="iPhone 13 Pro" class="w-full h-full object-cover" data-alt="clean product shot of a silver smartphone on a neutral background with elegant lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCw7DME01fnKl2S06JF5_Kzovv0FkErLI2DQVIA5D91UanNdpMg5dnFum5TDXyn5jXUicLlalTnfALTWJ4SpNhaA-LiSby7XKou7hbECMbhjH3BxaC_XAtkD8zrDuDUdK5k4Ixd1uG0nQgdneay2Rgt1nH-orjQYOPloUwX0Ha1ILT_kfGrJYz8lkWSEPSGodWC-qMFTubSzctZeQGq9Y56pd0MJpGxEH9WwXTQlnWveYADvXqRP1wuIbrTm4YIYPq7Ceu-7Slx6Lo"/>
+<div class="absolute top-2 left-2 bg-black/40 backdrop-blur-md rounded-full p-1.5">
+<span class="material-symbols-outlined text-white text-xs">favorite</span>
+</div>
+</div>
+<div class="p-4 flex flex-col gap-2">
+<h4 class="text-sm font-bold text-on-surface line-clamp-2 persian-text">آیفون ۱۳ پرو - ۲۵۶ جی‌بی - سالم</h4>
+<div class="flex flex-col gap-1 mt-auto">
+<span class="text-primary font-black text-base">۴۵,۰۰۰ افغانی</span>
+<span class="text-[10px] text-outline flex items-center gap-1">
+<span class="material-symbols-outlined text-[12px]">location_on</span>
+                                کابل، کارته ۴
+                            </span>
+</div>
+</div>
+</div>
+<!-- Ad Card 2 -->
+<div class="bg-surface-container-lowest rounded-lg overflow-hidden flex flex-col shadow-[0px_4px_16px_rgba(0,0,0,0.02)] active:scale-[0.98] transition-all">
+<div class="relative aspect-square">
+<img alt="Toyota Corolla" class="w-full h-full object-cover" data-alt="white modern sedan car parked on a clean urban street during daylight" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCWZgsWK3DvKEUFAw6dbmZO9usndeSY_UxGIS8ED9jpPUJxZl6pVNEJ58voMayCOfro2XndRzGJvFtdoPDFnLC0EhdgR80HBrZhACAx9RxGHgCss1L6-vDR-Vlcm7mW_0GQx_pN6XMTj-A4u0RljCfwYKULR_i8zdn_jczTWiort7jWJjmakJIFRU2edf-JdARdmjV259wMX0hcn6FFqF4kWdEN2Zz9APNjGFUcttbJwJ_9RCHDYXlXgpDEB318zv0WpBj_fnWDnD8"/>
+<div class="absolute top-2 left-2 bg-black/40 backdrop-blur-md rounded-full p-1.5">
+<span class="material-symbols-outlined text-white text-xs">favorite</span>
+</div>
+</div>
+<div class="p-4 flex flex-col gap-2">
+<h4 class="text-sm font-bold text-on-surface line-clamp-2 persian-text">تویوتا کرولا ۲۰۱۸ - رنگ سفید - خانگی</h4>
+<div class="flex flex-col gap-1 mt-auto">
+<span class="text-primary font-black text-base">۱۲,۵۰۰ دالر</span>
+<span class="text-[10px] text-outline flex items-center gap-1">
+<span class="material-symbols-outlined text-[12px]">location_on</span>
+                                هرات، چوک گل‌ها
+                            </span>
+</div>
+</div>
+</div>
+<!-- Ad Card 3 -->
+<div class="bg-surface-container-lowest rounded-lg overflow-hidden flex flex-col shadow-[0px_4px_16px_rgba(0,0,0,0.02)] active:scale-[0.98] transition-all">
+<div class="relative aspect-square">
+<img alt="Luxury Apartment" class="w-full h-full object-cover" data-alt="modern living room interior with large windows and bright natural light" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAPj1Crhsm83y8MY5hzCQn_2GpF6xMeEnIt5_wK5KJ5CDNSN2tcNvE_d4P8i3f56i5xCL24dVPumsl50TkLUa8KhLnfOU13WQlfda1C3ogEBsrWexvj155bot6YWbTrz_cRAF-5o4ZV9vCqzpCbppXXIFeXUPs-IWIQOvAllvSm9gYCfMgsNifDpWq-2H--tuj20Hus1tNZ_Oln994EqoIls9rL7hcxxweH4Zs3XLXqS9D5gSK38O4R_fjkAPKGlne2RYlhTZrJfqg"/>
+<div class="absolute top-2 left-2 bg-black/40 backdrop-blur-md rounded-full p-1.5">
+<span class="material-symbols-outlined text-white text-xs">favorite</span>
+</div>
+</div>
+<div class="p-4 flex flex-col gap-2">
+<h4 class="text-sm font-bold text-on-surface line-clamp-2 persian-text">آپارتمان ۳ اطاقه - نوساز - آفتاب‌رخ</h4>
+<div class="flex flex-col gap-1 mt-auto">
+<span class="text-primary font-black text-base">۳۵,۰۰۰ دالر</span>
+<span class="text-[10px] text-outline flex items-center gap-1">
+<span class="material-symbols-outlined text-[12px]">location_on</span>
+                                مزار شریف، منطقه ۱
+                            </span>
+</div>
+</div>
+</div>
+<!-- Ad Card 4 -->
+<div class="bg-surface-container-lowest rounded-lg overflow-hidden flex flex-col shadow-[0px_4px_16px_rgba(0,0,0,0.02)] active:scale-[0.98] transition-all">
+<div class="relative aspect-square">
+<img alt="Gaming Laptop" class="w-full h-full object-cover" data-alt="sleek gaming laptop on a desk with colored led lighting in a dark room" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCWyr6LyS2sW9qgaLXvxdgn5z4VE8Pe9LikqYhh0sRVfAHWw-e1dqPf32KU3otbICIW5nXQ5Du08d-Pf24zJvmIWTu95Xp7zvTNaWi9W390SqM_jOaVRml6ph6IZxUcKHyRJOtLkXcsqtomAcuaUGlpWgpaEYkFv9L5Abp96aqlVj_Mif13VYe2pkuZBiyDW0LYJ2h7DEIYvW7UXvwfubrS14uwKbD2OmutGjgbvNIeS2w4eG0aCBGOiaJ6pcJAtP4rcmeP0C0VY6E"/>
+<div class="absolute top-2 left-2 bg-black/40 backdrop-blur-md rounded-full p-1.5">
+<span class="material-symbols-outlined text-white text-xs">favorite</span>
+</div>
+</div>
+<div class="p-4 flex flex-col gap-2">
+<h4 class="text-sm font-bold text-on-surface line-clamp-2 persian-text">لپ‌تاپ گیمینگ HP Victus - نسل ۱۲</h4>
+<div class="flex flex-col gap-1 mt-auto">
+<span class="text-primary font-black text-base">۵۵,۰۰۰ افغانی</span>
+<span class="text-[10px] text-outline flex items-center gap-1">
+<span class="material-symbols-outlined text-[12px]">location_on</span>
+                                کابل، فروشگاه مرکزی
+                            </span>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- FAB for Post Ad (Suppressed on sub-pages but active here as it's Home) -->
+<div class="fixed bottom-24 right-6 z-40 md:hidden">
+<button class="bg-[#2B7A78] text-white flex items-center gap-2 px-6 py-4 rounded-xl shadow-lg shadow-primary/30 active:scale-95 transition-transform">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">add_circle</span>
+<span class="font-bold">ثبت آگهی</span>
+</button>
+</div>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 w-full z-50 rounded-t-[2rem] bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl shadow-[0_-4px_20px_rgba(0,0,0,0.05)] md:hidden">
+<div class="flex flex-row-reverse justify-around items-center w-full px-2 pb-safe py-2">
+<!-- Active: آگهی‌ها (Home) -->
+<div class="flex flex-col items-center justify-center bg-[#2B7A78] text-white rounded-full p-3 -mt-6 shadow-lg shadow-[#2B7A78]/30 active:scale-90 transition-transform">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">home</span>
+<span class="text-[10px] font-medium font-['Inter'] leading-[1.6]">آگهی‌ها</span>
+</div>
+<div class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 p-2 hover:text-[#2B7A78] transition-colors active:scale-90">
+<span class="material-symbols-outlined">grid_view</span>
+<span class="text-[10px] font-medium font-['Inter'] leading-[1.6]">دسته‌بندی</span>
+</div>
+<div class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 p-2 hover:text-[#2B7A78] transition-colors active:scale-90">
+<span class="material-symbols-outlined">add_circle</span>
+<span class="text-[10px] font-medium font-['Inter'] leading-[1.6]">ثبت آگهی</span>
+</div>
+<div class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 p-2 hover:text-[#2B7A78] transition-colors active:scale-90 relative">
+<span class="material-symbols-outlined">chat</span>
+<span class="text-[10px] font-medium font-['Inter'] leading-[1.6]">پیام‌ها</span>
+<div class="absolute top-1 right-1 w-2 h-2 bg-error rounded-full"></div>
+</div>
+<div class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 p-2 hover:text-[#2B7A78] transition-colors active:scale-90">
+<span class="material-symbols-outlined">person</span>
+<span class="text-[10px] font-medium font-['Inter'] leading-[1.6]">حساب کاربری</span>
+</div>
+</div>
+</nav>
+<!-- Footer (Visible on desktop) -->
+<footer class="hidden md:block w-full pt-12 pb-24 px-6 bg-slate-50 dark:bg-slate-950 border-t border-slate-200 dark:border-slate-800">
+<div class="max-w-7xl mx-auto flex flex-col items-end w-full space-y-4">
+<h3 class="text-lg font-bold text-[#17252A] dark:text-white">افغان بازار</h3>
+<div class="flex flex-row-reverse gap-8">
+<a class="text-slate-500 dark:text-slate-400 text-sm font-['Inter'] leading-[1.8] hover:text-[#17252A] dark:hover:text-white transition-opacity" href="#">درباره ما</a>
+<a class="text-slate-500 dark:text-slate-400 text-sm font-['Inter'] leading-[1.8] hover:text-[#17252A] dark:hover:text-white transition-opacity" href="#">تماس با ما</a>
+<a class="text-slate-500 dark:text-slate-400 text-sm font-['Inter'] leading-[1.8] hover:text-[#17252A] dark:hover:text-white transition-opacity" href="#">قوانین و مقررات</a>
+</div>
+<p class="text-sm font-['Inter'] leading-[1.8] text-right text-slate-400 mt-6">© ۲۰۲۴ بازار مدرن افغانستان. تمامی حقوق محفوظ است.</p>
+</div>
+</footer>
+</body></html>

@@ -1,0 +1,129 @@
+{% block extra_head %}
+<!-- Leaflet Fallback Assets -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script async src="https://maps.googleapis.com/maps/api/js?key={{ GOOGLE_MAPS_API_KEY }}&callback=initMap" onerror="googleMapsError()"></script>
+<style>
+    #map-fallback-msg { display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 1000; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="space-y-4">
+    <div class="flex items-center justify-between">
+        <h1 class="text-2xl font-bold text-gray-800">📍 Product Explorer</h1>
+        <button id="find-near-me" class="bg-indigo-600 text-white px-4 py-2 rounded-full font-semibold hover:bg-indigo-700 transition flex items-center gap-2">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+            Find products near me
+        </button>
+    </div>
+
+    <!-- Map Container -->
+    <div class="relative">
+        <div id="map" class="w-full h-[500px] rounded-2xl shadow-sm border border-gray-100 overflow-hidden bg-gray-50"></div>
+        <div id="map-fallback-msg" class="text-center">
+            <p class="text-gray-600 font-medium">Google Maps could not be loaded.</p>
+            <p class="text-xs text-gray-400 mt-1">Switching to open-source fallback...</p>
+        </div>
+    </div>
+
+    <!-- Nearby Products List -->
+    ...
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    let map;
+    let markers = [];
+    let isGoogleMaps = false;
+    const nearbyContainer = document.getElementById('nearby-container');
+    const nearbyList = document.getElementById('nearby-list');
+
+    window.gm_authFailure = function() { googleMapsError(); };
+
+    function googleMapsError() {
+        if (isGoogleMaps) return;
+        document.getElementById('map-fallback-msg').style.display = 'block';
+        setTimeout(() => {
+            document.getElementById('map-fallback-msg').style.display = 'none';
+            initLeafletMap();
+        }, 2000);
+    }
+
+    function initMap() {
+        isGoogleMaps = true;
+        const center = { lat: 34.5553, lng: 69.2075 };
+        try {
+            map = new google.maps.Map(document.getElementById("map"), { zoom: 6, center: center });
+            loadProductsGoogle();
+        } catch (e) { googleMapsError(); }
+    }
+
+    function initLeafletMap() {
+        const center = [34.5553, 69.2075];
+        map = L.map('map').setView(center, 6);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+        loadProductsLeaflet();
+    }
+
+    function loadProductsGoogle() {
+        fetch('/api/products/map/').then(res => res.json()).then(data => {
+            data.forEach(ad => {
+                const marker = new google.maps.Marker({ position: { lat: ad.lat, lng: ad.lng }, map: map });
+                const info = new google.maps.InfoWindow({ content: `<div class="p-2"><b>${ad.title}</b><p>${ad.price} AFN</p><a href="${ad.url}">View</a></div>` });
+                marker.addListener("click", () => info.open(map, marker));
+            });
+        });
+    }
+
+    function loadProductsLeaflet() {
+        fetch('/api/products/map/').then(res => res.json()).then(data => {
+            data.forEach(ad => {
+                L.marker([ad.lat, ad.lng]).addTo(map).bindPopup(`<b>${ad.title}</b><br>${ad.price} AFN<br><a href="${ad.url}">View</a>`);
+            });
+        });
+    }
+
+    document.getElementById('find-near-me').addEventListener('click', function() {
+        if (navigator.geolocation) {
+            this.innerHTML = '<span class="animate-pulse">Locating...</span>';
+            navigator.geolocation.getCurrentPosition(position => {
+                const lat = position.coords.latitude;
+                const lng = position.coords.longitude;
+                
+                if (isGoogleMaps) {
+                    const userLoc = { lat, lng };
+                    map.setCenter(userLoc);
+                    map.setZoom(12);
+                    new google.maps.Marker({ position: userLoc, map: map, icon: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png' });
+                } else {
+                    map.setView([lat, lng], 12);
+                    L.marker([lat, lng]).addTo(map).bindPopup("You are here").openPopup();
+                }
+
+                fetch(`/products/nearby/?lat=${lat}&lng=${lng}&radius=20`).then(res => res.json()).then(data => {
+                    this.innerHTML = 'Find products near me';
+                    nearbyContainer.classList.remove('hidden');
+                    nearbyList.innerHTML = '';
+                    if (data.length === 0) {
+                        nearbyList.innerHTML = '<p class="text-xs text-gray-500 col-span-full text-center py-6">No products found within 20km.</p>';
+                    } else {
+                        data.forEach(ad => {
+                            nearbyList.innerHTML += `
+                                <div class="bg-white rounded-xl shadow-sm overflow-hidden border border-gray-100 p-2">
+                                    <h4 class="font-bold text-sm truncate">${ad.title}</h4>
+                                    <p class="text-indigo-600 text-xs">${ad.price} AFN</p>
+                                    <a href="${ad.url}" class="text-[10px] text-blue-500 hover:underline">View</a>
+                                </div>
+                            `;
+                        });
+                    }
+                });
+            }, () => { alert("Geolocation failed."); this.innerHTML = 'Find products near me'; });
+        }
+    });
+
+    setTimeout(() => { if (!isGoogleMaps && typeof L !== 'undefined') googleMapsError(); }, 5000);
+</script>
+{% endblock %}

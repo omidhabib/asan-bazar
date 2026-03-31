@@ -1,0 +1,327 @@
+{% extends 'base.html' %}
+{% block title %}{{ ad.title }} - AfghaniStore{% endblock %}
+
+{% block extra_head %}
+<!-- Bootstrap 5 CSS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<!-- Bootstrap Icons -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<style>
+/* Custom tweaks to make it modern */
+.product-img { max-height: 400px; object-fit: cover; border-radius: 12px; }
+.card-custom { border: none; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+.seller-avatar { width: 60px; height: 60px; object-fit: cover; border-radius: 50%; }
+.verified-icon { color: #0d6efd; font-size: 1.1rem; }
+.star-rating { color: #ffc107; }
+
+/* Overriding tailwind conflict for bootstrap container */
+@media (min-width: 1200px) {
+    .container { max-width: 1140px; }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container my-4" style="text-align: left;">
+    <div class="row g-4">
+        
+        <!-- Left Column: Product Image & Details -->
+        <div class="col-lg-8">
+            <!-- Product Image Card -->
+            <div class="card card-custom mb-4 overflow-hidden">
+                {% if ad.image %}
+                <img src="{{ ad.image.url }}" class="card-img-top product-img" alt="{{ ad.title }}">
+                {% else %}
+                <div class="bg-light d-flex align-items-center justify-content-center" style="height: 300px;">
+                    <i class="bi bi-image text-muted" style="font-size: 4rem;"></i>
+                </div>
+                {% endif %}
+                
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <div>
+                            <h2 class="card-title fw-bold mb-1">{{ ad.title }}</h2>
+                            <div class="d-flex align-items-center gap-2 mb-2">
+                                <h3 class="text-primary fw-bold mb-0">AFN {{ ad.price|floatformat:0 }}</h3>
+                                {% if ad_review_count > 0 %}
+                                <div class="badge bg-warning text-dark d-flex align-items-center gap-1">
+                                    <i class="bi bi-star-fill"></i> {{ ad_avg_rating }} ({{ ad_review_count }} reviews)
+                                </div>
+                                {% else %}
+                                <span class="text-muted small italic">No reviews yet</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <span class="badge bg-secondary rounded-pill px-3 py-2" style="font-size: 0.9rem;">{{ ad.category.name }}</span>
+                    </div>
+                    
+                    <div class="d-flex gap-4 text-muted small mt-2 mb-4 align-items-center">
+                        <span><i class="bi bi-geo-alt"></i> {{ ad.location }}</span>
+                        <span><i class="bi bi-clock"></i> {{ ad.created_at|timesince }} ago</span>
+                        <span>
+                            <button type="button" class="btn btn-sm p-0 border-0 fs-5 {% if is_favorited %}text-danger{% else %}text-muted{% endif %}" onclick="toggleFavorite(event, {{ ad.pk }}, this); return false;" id="detail-heart" data-url="{% url 'toggle_favorite' pk=ad.pk %}" style="background: none;">
+                                {% if is_favorited %}
+                                <i class="bi bi-heart-fill"></i>
+                                {% else %}
+                                <i class="bi bi-heart"></i>
+                                {% endif %}
+                            </button>
+                            <span id="fav-count" class="ms-1">{{ favorites_count }}</span>
+                        </span>
+                    </div>
+
+                    <h5 class="fw-bold border-bottom pb-2">Description</h5>
+                    <p class="card-text text-secondary mt-3" style="white-space: pre-line; line-height: 1.6;">{{ ad.description }}</p>
+                </div>
+            </div>
+
+            <!-- Product Comments Section -->
+            <div class="card card-custom mb-4">
+                <div class="card-body p-4">
+                    <h5 class="fw-bold border-bottom pb-2 mb-4">Questions & Comments</h5>
+                    
+                    <!-- Comment List -->
+                    <div class="mb-4">
+                        {% for comment in comments %}
+                        <div class="d-flex gap-3 mb-3 pb-3 border-bottom">
+                            <div class="flex-shrink-0">
+                                {% if comment.user.profile_photo %}
+                                <img src="{{ comment.user.profile_photo.url }}" class="rounded-circle shadow-sm" style="width: 45px; height: 45px; object-fit: cover;">
+                                {% else %}
+                                <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center fw-bold shadow-sm" style="width: 45px; height: 45px;">
+                                    {{ comment.user.full_name|slice:":1"|upper }}
+                                </div>
+                                {% endif %}
+                            </div>
+                            <div class="flex-grow-1">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <h6 class="mb-0 fw-bold">{{ comment.user.full_name }}</h6>
+                                    <small class="text-muted">{{ comment.created_at|timesince }} ago</small>
+                                </div>
+                                <p class="mb-0 text-dark mt-1" style="font-size: 0.95rem;">{{ comment.text }}</p>
+                            </div>
+                        </div>
+                        {% empty %}
+                        <p class="text-muted text-center py-4 bg-light rounded-3">No comments yet. Be the first to ask a question!</p>
+                        {% endfor %}
+                    </div>
+
+                    <!-- Add Comment Form -->
+                    {% if user.is_authenticated %}
+                    <form method="POST" action="{% url 'add_comment' ad.pk %}" class="mt-3 bg-light p-3 rounded-3 border">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold text-secondary">Leave a comment</label>
+                            <textarea name="text" rows="2" class="form-control" placeholder="Ask about the product..." required></textarea>
+                        </div>
+                        <div class="text-end">
+                            <button type="submit" class="btn btn-primary px-4 fw-bold rounded-pill">Post Comment</button>
+                        </div>
+                    </form>
+                    {% else %}
+                    <div class="alert alert-secondary border text-center my-3">
+                        <a href="{% url 'login' %}" class="text-decoration-none fw-bold">Login</a> to leave a comment about this product.
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Column: Seller Info & Actions -->
+        <div class="col-lg-4">
+            <!-- Seller Card -->
+            <div class="card card-custom mb-4 sticky-lg-top" style="top: 80px; z-index: 10;">
+                <div class="card-body p-4 text-center">
+                    <a href="{% url 'user_profile' ad.user.pk %}" class="text-decoration-none text-dark d-block mb-3">
+                        {% if ad.user.profile_photo %}
+                        <img src="{{ ad.user.profile_photo.url }}" class="seller-avatar mb-3 mx-auto shadow-sm border border-2 border-white">
+                        {% else %}
+                        <div class="bg-indigo-600 text-white rounded-circle d-flex align-items-center justify-content-center fw-bold mx-auto shadow-sm mb-3 border border-2 border-white" style="width: 60px; height: 60px; font-size: 1.5rem; background-color: #4f46e5;">
+                            {{ ad.user.full_name|slice:":1"|upper }}
+                        </div>
+                        {% endif %}
+                        
+                        <h4 class="fw-bold mb-1">
+                            {{ ad.user.full_name }}
+                            {% if ad.user.is_verified %}
+                            <i class="bi bi-patch-check-fill verified-icon ms-1" title="Verified Seller"></i>
+                            {% endif %}
+                        </h4>
+                        <p class="text-muted small mb-2">Member since {{ ad.user.date_joined|date:"M Y" }}</p>
+                        
+                        <!-- Seller Ratings -->
+                        <div class="d-flex justify-content-center align-items-center gap-2 mb-4 bg-light p-2 rounded-3 border">
+                            <div class="star-rating fs-5">
+                                <i class="bi bi-star-fill"></i>
+                            </div>
+                            <span class="fw-bold fs-5">{{ seller_avg_rating }}</span>
+                            <span class="text-muted small">({{ seller_review_count }} Reviews)</span>
+                        </div>
+                    </a>
+
+                    <!-- Contact Buttons -->
+                    <div class="d-grid gap-3 mt-2">
+                        {% if request.user == ad.user %}
+                        <a href="{% url 'edit_ad' ad.pk %}" class="btn btn-outline-primary fw-bold rounded-pill py-2"><i class="bi bi-pencil"></i> Edit Ad</a>
+                        <a href="{% url 'delete_ad' ad.pk %}" class="btn btn-outline-danger fw-bold rounded-pill py-2"><i class="bi bi-trash"></i> Delete</a>
+                        {% else %}
+                        <a href="tel:{{ ad.phone_number }}" class="btn btn-success fw-bold rounded-pill py-2 text-white" style="background-color: #10b981; border: none;">
+                            <i class="bi bi-telephone-fill me-1"></i> {{ ad.phone_number }}
+                        </a>
+                        
+                        {% if user.is_authenticated %}
+                        <form method="POST" action="{% url 'start_conversation' ad.pk %}" class="m-0">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-primary w-100 fw-bold rounded-pill py-2" style="background-color: #4f46e5; border: none;">
+                                <i class="bi bi-chat-text-fill me-1"></i> Message Seller
+                            </button>
+                        </form>
+                        <button type="button" class="btn btn-outline-secondary fw-bold rounded-pill py-2 mt-1" data-bs-toggle="modal" data-bs-target="#rateSellerModal">
+                            <i class="bi bi-star me-1"></i> Rate This Product
+                        </button>
+                        {% else %}
+                        <a href="{% url 'login' %}" class="btn btn-primary fw-bold rounded-pill py-2" style="background-color: #4f46e5; border: none;">
+                            <i class="bi bi-chat-text-fill me-1"></i> Login to Message
+                        </a>
+                        {% endif %}
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Seller Recent Reviews (Mini List) -->
+                    {% if seller_reviews %}
+                    <div class="mt-4 pt-3 border-top text-start">
+                        <h6 class="fw-bold text-secondary mb-3 fs-6">Recent Seller Reviews</h6>
+                        {% for rev in seller_reviews|slice:":3" %}
+                        <div class="mb-2 pb-2 {% if not forloop.last %}border-bottom{% endif %}">
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <span class="fw-semibold" style="font-size: 0.85rem;">{{ rev.reviewer.full_name }}</span>
+                                <div class="text-warning" style="font-size: 0.75rem;">
+                                    {% for i in "12345"|make_list %}<i class="bi {% if forloop.counter <= rev.rating %}bi-star-fill{% else %}bi-star{% endif %}"></i>{% endfor %}
+                                </div>
+                            </div>
+                            <p class="mb-0 text-muted" style="font-size: 0.8rem;">{{ rev.comment|truncatechars:50 }}</p>
+                        </div>
+                        {% endfor %}
+                        {% if seller_review_count > 3 %}
+                        <a href="{% url 'user_profile' ad.user.pk %}" class="d-block text-center text-primary mt-2 small fw-bold text-decoration-none">View all {{ seller_review_count }} reviews</a>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+    </div>
+</div>
+
+<!-- Rate Seller Modal -->
+{% if user.is_authenticated and request.user != ad.user %}
+<div class="modal fade" id="rateSellerModal" tabindex="-1" aria-labelledby="rateSellerModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-0" style="border-radius: 12px;">
+      <div class="modal-header border-0 pb-0">
+        <h5 class="modal-title fw-bold" id="rateSellerModalLabel">Rate this Product</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body pb-4">
+        <form id="seller-review-form" onsubmit="submitSellerReview(event)">
+            <input type="hidden" id="seller-id" value="{{ ad.user.pk }}">
+            <div class="text-center mb-4">
+                <p class="text-muted small mb-2">How was your experience?</p>
+                <div class="d-flex justify-content-center gap-2 fs-2 text-warning" id="modal-star-rating">
+                    <i class="bi bi-star cursor-pointer seller-star" data-val="1"></i>
+                    <i class="bi bi-star cursor-pointer seller-star" data-val="2"></i>
+                    <i class="bi bi-star cursor-pointer seller-star" data-val="3"></i>
+                    <i class="bi bi-star cursor-pointer seller-star" data-val="4"></i>
+                    <i class="bi bi-star cursor-pointer seller-star" data-val="5"></i>
+                </div>
+                <input type="hidden" id="seller-rating-value" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label text-secondary fw-semibold small">Write a review (Optional)</label>
+                <textarea id="seller-review-comment" rows="3" class="form-control bg-light border-0" placeholder="Was the seller polite? Did the item match the description?"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary w-100 fw-bold py-2 rounded-pill">Submit Review</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Bootstrap Bundle with Popper required for Modals -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+// Star Interaction for Seller Review Modal
+const sellerStars = document.querySelectorAll('.seller-star');
+const sellerRatingInput = document.getElementById('seller-rating-value');
+
+sellerStars.forEach(star => {
+    star.addEventListener('click', function() {
+        const val = this.dataset.val;
+        sellerRatingInput.value = val;
+        sellerStars.forEach(s => {
+            if (s.dataset.val <= val) {
+                s.classList.remove('bi-star');
+                s.classList.add('bi-star-fill');
+            } else {
+                s.classList.add('bi-star');
+                s.classList.remove('bi-star-fill');
+            }
+        });
+    });
+    star.addEventListener('mouseover', function() {
+        this.style.cursor = 'pointer';
+    });
+});
+
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+async function submitSellerReview(e) {
+    e.preventDefault();
+    const rating = sellerRatingInput.value;
+    if(!rating) return alert('Please select a star rating first.');
+    
+    const comment = document.getElementById('seller-review-comment').value;
+    const target_user = document.getElementById('seller-id').value;
+
+    try {
+        const res = await fetch('/api/reviews/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken')
+            },
+            body: JSON.stringify({ 
+                rating: parseInt(rating), 
+                comment, 
+                ad: parseInt("{{ ad.pk }}")
+            })
+        });
+        if (res.ok) {
+            window.location.reload();
+        } else {
+            const data = await res.json();
+            alert('Error submitting review: ' + JSON.stringify(data));
+        }
+    } catch(e) {
+        alert('Network error.');
+    }
+}
+</script>
+{% endif %}
+
+{% endblock %}

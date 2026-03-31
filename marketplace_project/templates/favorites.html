@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block title %}Saved Ads - AfghaniStore{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto">
+    <h2 class="text-lg font-bold text-gray-800 mb-4">❤️ Saved Ads</h2>
+    {% if ads %}
+    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+        {% include 'partials/ad_card.html' %}
+    </div>
+    {% else %}
+    <div class="bg-white rounded-2xl p-10 text-center shadow-sm">
+        <p class="text-4xl mb-3">❤️</p>
+        <p class="text-gray-500 font-medium">No saved ads yet</p>
+        <p class="text-gray-400 text-sm mt-1">Tap the heart icon on any ad to save it</p>
+        <a href="{% url 'home' %}" class="mt-4 inline-block bg-indigo-600 text-white px-6 py-2 rounded-full font-semibold hover:bg-indigo-700 transition">Browse Ads</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

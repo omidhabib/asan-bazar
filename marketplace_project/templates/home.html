@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% block title %}{{ page_title|default:"Latest Ads" }} - AfghaniStore{% endblock %}
+
+{% block extra_head %}
+<script src="/static/js/infinite-scroll.js" defer></script>
+{% endblock %}
+
+{% block content %}
+<!-- Category & City Filter Stop -->
+<div class="flex flex-col md:flex-row gap-3 mb-4">
+    <!-- Categories -->
+    <div class="overflow-x-auto pb-2 flex-grow -mx-3 px-3">
+        <div class="flex gap-2 w-max">
+            <a href="{% url 'home' %}" class="whitespace-nowrap px-4 py-1.5 rounded-full text-sm font-medium shadow-sm transition
+                {% if not request.resolver_match.kwargs.slug %}bg-indigo-600 text-white{% else %}bg-white text-gray-600 hover:bg-indigo-50{% endif %}">
+                {{ t.All }}
+            </a>
+            {% for cat in categories %}
+            <a href="{% url 'category_ads' cat.slug %}" class="whitespace-nowrap px-4 py-1.5 rounded-full text-sm font-medium shadow-sm transition
+                {% if request.resolver_match.kwargs.slug == cat.slug %}bg-indigo-600 text-white{% else %}bg-white text-gray-600 hover:bg-indigo-50{% endif %}">
+                {{ cat.name }}
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- City Filter Dropdown -->
+    <div class="shrink-0 flex items-center gap-2">
+        <label class="text-xs font-bold text-gray-400 uppercase tracking-wider">{{ t.City|default:"Location" }}</label>
+        <select onchange="location.href='?city=' + this.value" class="text-sm border-0 bg-white shadow-sm rounded-full px-4 py-1.5 focus:ring-2 focus:ring-indigo-400 outline-none cursor-pointer">
+            <option value="">{{ t.All|default:"All Cities" }}</option>
+            {% for city in afghan_cities %}
+            <option value="{{ city }}" {% if request.GET.city == city %}selected{% endif %}>{{ city }}</option>
+            {% endfor %}
+        </select>
+    </div>
+</div>
+
+{% if category %}
+<h2 class="text-base font-semibold text-gray-700 mb-3">📂 {{ category.name }} <span class="text-gray-400 font-normal text-sm">({{ ads.count }} {{ t.AdsCount }})</span></h2>
+{% endif %}
+
+<!-- Ads Grid -->
+<div id="ads-grid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+    {% include 'partials/ad_card.html' %}
+</div>
+
+<!-- Skeleton Cards (shown during loading) -->
+<div id="skeleton-container" class="hidden grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 mt-3">
+    {% for i in "123456789012"|make_list %}
+    <div class="bg-white rounded-2xl overflow-hidden shadow-sm">
+        <div class="skeleton h-44 w-full"></div>
+        <div class="p-3 space-y-2">
+            <div class="skeleton h-5 w-2/3 rounded"></div>
+            <div class="skeleton h-4 w-full rounded"></div>
+            <div class="skeleton h-3 w-1/2 rounded"></div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- Sentinel for Infinite Scroll -->
+<div id="scroll-sentinel" class="h-8 mt-4"
+     data-page="2"
+     data-has-more="{% if is_paginated and page_obj.has_next %}true{% else %}false{% endif %}"
+     data-query="{{ request.GET.q|default:'' }}"
+     data-category="{{ request.resolver_match.kwargs.slug|default:'' }}">
+</div>
+
+<!-- End of feed indicator -->
+<div id="end-of-feed" class="hidden text-center py-6 text-gray-400 text-sm">
+    <span class="inline-block px-4 py-2 bg-gray-100 rounded-full">{{ t.EndOfFeed }}</span>
+</div>
+{% endblock %}

@@ -1,0 +1,143 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Following - AfghaniStore{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto">
+    <!-- Page Header -->
+    <div class="mb-6">
+        <h1 class="text-2xl font-bold text-gray-800">Following</h1>
+        <p class="text-gray-500 mt-1">People you're following ({{ following_users|length }})</p>
+    </div>
+
+    {% if following_users %}
+    <!-- Users Grid -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        {% for follow in following_users %}
+        {% with user=follow.followed %}
+        <div class="bg-white rounded-2xl p-5 shadow-sm hover:shadow-md transition flex flex-col">
+            <!-- User Info -->
+            <div class="flex items-center gap-3 mb-4">
+                {% if user.profile_photo %}
+                <img src="{{ user.profile_photo.url }}" 
+                     alt="{{ user.full_name }}"
+                     class="w-14 h-14 rounded-full object-cover ring-2 ring-indigo-100">
+                {% else %}
+                <div class="w-14 h-14 rounded-full bg-gradient-to-br from-indigo-400 to-purple-500 flex items-center justify-center text-white font-bold text-xl ring-2 ring-indigo-100">
+                    {{ user.full_name|slice:":1"|upper }}
+                </div>
+                {% endif %}
+                <div class="flex-grow">
+                    <h3 class="font-bold text-gray-800 text-sm">{{ user.full_name }}</h3>
+                    <p class="text-xs text-gray-400">Member since {{ user.date_joined|date:"M Y" }}</p>
+                </div>
+            </div>
+
+            <!-- Stats -->
+            <div class="grid grid-cols-3 gap-2 mb-4 pb-4 border-b border-gray-100 text-center text-xs">
+                <div>
+                    <p class="font-bold text-indigo-600">{{ user.ads.count }}</p>
+                    <p class="text-gray-400 text-xs">Active Ads</p>
+                </div>
+                <div>
+                    <p class="font-bold text-indigo-600">{{ user.followers.count }}</p>
+                    <p class="text-gray-400 text-xs">Followers</p>
+                </div>
+                <div>
+                    <p class="font-bold text-indigo-600">{{ user.following.count }}</p>
+                    <p class="text-gray-400 text-xs">Following</p>
+                </div>
+            </div>
+
+            <!-- Buttons -->
+            <div class="flex gap-2 mt-auto">
+                <a href="{% url 'user_profile' pk=user.pk %}" 
+                   class="flex-1 text-center bg-indigo-50 text-indigo-600 hover:bg-indigo-100 py-2 rounded-lg text-sm font-semibold transition">
+                    View Profile
+                </a>
+                <button class="follow-btn following flex-1 bg-indigo-600 text-white hover:bg-indigo-700 py-2 rounded-lg text-sm font-semibold transition"
+                        data-user-id="{{ user.pk }}" 
+                        data-url="{% url 'toggle_follow' pk=user.pk %}" 
+                        onclick="toggleFollowFromList(event, {{ user.pk }}, this)">
+                    Following
+                </button>
+            </div>
+        </div>
+        {% endwith %}
+        {% endfor %}
+    </div>
+
+    <!-- Pagination -->
+    {% if is_paginated %}
+    <div class="flex justify-center gap-2 mt-8">
+        {% if page_obj.has_previous %}
+        <a href="?page=1" class="px-3 py-1 rounded-lg bg-gray-100 hover:bg-gray-200 text-sm font-semibold">First</a>
+        <a href="?page={{ page_obj.previous_page_number }}" class="px-3 py-1 rounded-lg bg-gray-100 hover:bg-gray-200 text-sm font-semibold">Previous</a>
+        {% endif %}
+        
+        <span class="px-3 py-1 text-sm font-semibold text-gray-600">
+            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+        </span>
+        
+        {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}" class="px-3 py-1 rounded-lg bg-gray-100 hover:bg-gray-200 text-sm font-semibold">Next</a>
+        <a href="?page={{ page_obj.paginator.num_pages }}" class="px-3 py-1 rounded-lg bg-gray-100 hover:bg-gray-200 text-sm font-semibold">Last</a>
+        {% endif %}
+    </div>
+    {% endif %}
+
+    {% else %}
+    <!-- Empty State -->
+    <div class="bg-white rounded-2xl p-12 text-center shadow-sm">
+        <svg class="w-16 h-16 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 00-5.856-1.487M15 10a3 3 0 11-6 0 3 3 0 016 0z"/>
+        </svg>
+        <h2 class="text-xl font-bold text-gray-800 mb-2">No one to follow yet</h2>
+        <p class="text-gray-500 mb-4">Start following users to see their ads here</p>
+        <a href="{% url 'home' %}" class="inline-block bg-indigo-600 text-white px-6 py-2 rounded-full font-semibold hover:bg-indigo-700 transition">Browse Users</a>
+    </div>
+    {% endif %}
+</div>
+
+<script>
+function toggleFollowFromList(event, userId, btn) {
+    event.preventDefault();
+    event.stopPropagation();
+    
+    const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+    const url = btn.dataset.url;
+    
+    fetch(url, {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+            'X-CSRFToken': csrfToken,
+            'Content-Type': 'application/json',
+        },
+    })
+    .then(res => {
+        if (res.status === 401) {
+            window.location.href = '/login/';
+            return null;
+        }
+        return res.json();
+    })
+    .then(data => {
+        if (!data) return;
+        if (data.is_following) {
+            btn.classList.add('following');
+            btn.classList.remove('bg-gray-100', 'text-gray-700', 'hover:bg-gray-200');
+            btn.classList.add('bg-indigo-600', 'text-white', 'hover:bg-indigo-700');
+            btn.textContent = 'Following';
+        } else {
+            btn.classList.remove('following');
+            btn.classList.add('bg-gray-100', 'text-gray-700', 'hover:bg-gray-200');
+            btn.classList.remove('bg-indigo-600', 'text-white', 'hover:bg-indigo-700');
+            btn.textContent = 'Follow';
+        }
+    })
+    .catch(err => console.error('Follow error:', err));
+}
+</script>
+{% endblock %}

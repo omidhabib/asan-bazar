@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+{% block title %}Chat with {{ other_user.full_name }} - AfghaniStore{% endblock %}
+
+{% block extra_head %}
+<script src="/static/js/chat.js" defer></script>
+{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto flex flex-col" style="height: calc(100vh - 130px);">
+    <!-- Chat Header -->
+    <div class="bg-white rounded-2xl px-4 py-3 mb-3 shadow-sm flex items-center gap-3 sticky top-16 z-10">
+        <a href="{% url 'conversation_list' %}" class="text-gray-400 hover:text-indigo-600 transition mr-1">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+        </a>
+        <div class="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-700 font-bold overflow-hidden">
+            {% if other_user.profile_photo %}
+            <img src="{{ other_user.profile_photo.url }}" alt="{{ other_user.full_name }}" class="w-full h-full object-cover">
+            {% else %}
+            {{ other_user.full_name|slice:":1"|upper }}
+            {% endif %}
+        </div>
+        <div>
+            <div class="flex items-center gap-1">
+                <p class="font-bold text-gray-800">{{ other_user.full_name }}</p>
+                {% if other_user.is_verified %}
+                <span class="verified-badge text-white text-xs px-1.5 py-0.5 rounded-full">✓</span>
+                {% endif %}
+            </div>
+            {% if conversation.ad %}
+            <a href="/ad/{{ conversation.ad.pk }}/" class="text-xs text-indigo-500 hover:underline truncate max-w-xs block">
+                📢 {{ conversation.ad.title }}
+            </a>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Messages Area -->
+    <div id="messages-container" class="flex-grow overflow-y-auto space-y-3 px-1 mb-3">
+        {% for message in messages %}
+        <div class="flex {% if message.sender == request.user %}justify-end{% else %}justify-start{% endif %}">
+            <div class="max-w-xs lg:max-w-md">
+                <div class="px-4 py-2.5 rounded-2xl text-sm leading-relaxed
+                    {% if message.sender == request.user %}
+                    bg-indigo-600 text-white rounded-br-sm
+                    {% else %}
+                    bg-white text-gray-800 shadow-sm rounded-bl-sm
+                    {% endif %}">
+                    {{ message.content }}
+                </div>
+                <p class="text-xs text-gray-400 mt-1 {% if message.sender == request.user %}text-right{% endif %}">
+                    {{ message.timestamp|date:"H:i" }}
+                </p>
+            </div>
+        </div>
+        {% empty %}
+        <div class="text-center text-gray-400 py-8">
+            <p class="text-3xl mb-2">👋</p>
+            <p class="text-sm">Start the conversation!</p>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Message Input -->
+    <div class="bg-white rounded-2xl shadow-sm p-3 sticky bottom-16 md:bottom-0">
+        <form id="chat-form" method="POST" action="" class="flex items-center gap-2">
+            {% csrf_token %}
+            <input type="text" name="content" id="message-input"
+                   placeholder="Type a message..."
+                   autocomplete="off"
+                   class="flex-grow px-4 py-2.5 bg-gray-50 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400">
+            <button type="submit" class="w-10 h-10 bg-indigo-600 rounded-full flex items-center justify-center text-white hover:bg-indigo-700 active:scale-95 transition-all shrink-0">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/></svg>
+            </button>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+{% block title %}Edit Profile - AfghaniStore{% endblock %}
+
+{% block content %}
+<div class="max-w-sm mx-auto mt-6">
+    <div class="bg-white rounded-2xl shadow-sm p-6">
+        <h2 class="text-xl font-extrabold text-gray-800 mb-5">✏️ Edit Profile</h2>
+
+        <form method="POST" enctype="multipart/form-data" action="{% url 'edit_profile' %}" class="space-y-5">
+            {% csrf_token %}
+
+            <!-- Current Photo Preview -->
+            <div class="flex flex-col items-center gap-3">
+                {% if request.user.profile_photo %}
+                    <img src="{{ request.user.profile_photo.url }}" alt="Profile Photo"
+                         id="photo-preview"
+                         class="w-24 h-24 rounded-full object-cover ring-4 ring-indigo-100">
+                {% else %}
+                    <div id="photo-preview-placeholder"
+                         class="w-24 h-24 rounded-full bg-gradient-to-br from-indigo-400 to-purple-500 flex items-center justify-center text-white font-bold text-3xl ring-4 ring-indigo-100">
+                        {{ request.user.full_name|slice:":1"|upper }}
+                    </div>
+                    <img src="" alt="" id="photo-preview" class="w-24 h-24 rounded-full object-cover ring-4 ring-indigo-100 hidden">
+                {% endif %}
+                <p class="text-xs text-gray-400">Tap below to pick a photo</p>
+            </div>
+
+            <!-- Photo Upload -->
+            <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-1">Profile Photo</label>
+                <input type="file" name="profile_photo" accept="image/*" id="photo-input"
+                       class="w-full text-sm text-gray-500 file:mr-3 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-600 hover:file:bg-indigo-100 cursor-pointer">
+                {% if form.profile_photo.errors %}
+                    <p class="text-red-500 text-xs mt-1">{{ form.profile_photo.errors.0 }}</p>
+                {% endif %}
+            </div>
+
+            <!-- Full Name -->
+            <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-1">Full Name</label>
+                {{ form.full_name }}
+                {% if form.full_name.errors %}
+                    <p class="text-red-500 text-xs mt-1">{{ form.full_name.errors.0 }}</p>
+                {% endif %}
+            </div>
+
+            <div class="flex gap-3 pt-2">
+                <a href="{% url 'user_profile' request.user.pk %}"
+                   class="flex-1 text-center py-3 rounded-xl border border-gray-200 text-gray-600 font-semibold hover:bg-gray-50 transition">
+                    Cancel
+                </a>
+                <button type="submit"
+                        class="flex-1 bg-indigo-600 text-white font-bold py-3 rounded-xl hover:bg-indigo-700 active:scale-95 transition-all">
+                    Save Changes
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    // Live preview when user picks a file
+    document.getElementById('photo-input').addEventListener('change', function () {
+        const file = this.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            const preview = document.getElementById('photo-preview');
+            const placeholder = document.getElementById('photo-preview-placeholder');
+            preview.src = e.target.result;
+            preview.classList.remove('hidden');
+            if (placeholder) placeholder.classList.add('hidden');
+        };
+        reader.readAsDataURL(file);
+    });
+</script>
+{% endblock %}

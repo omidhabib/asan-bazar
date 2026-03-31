@@ -1,0 +1,19 @@
+{% extends 'home.html' %}
+
+{% block content %}
+<!-- Inherit layout from home, just change header for category -->
+
+<div class="bg-indigo-700 text-white p-8 rounded-xl shadow mb-8">
+    <h1 class="text-3xl font-bold mb-2 text-center">{{ category.name }}</h1>
+    <p class="text-center text-indigo-200">Browsing all ads under {{ category.name }}</p>
+    
+    <form method="GET" action="{% url 'home' %}" class="flex max-w-xl mx-auto mt-6">
+        <input type="text" name="q" placeholder="Search globally..." class="w-full px-4 py-2 rounded-l-lg text-gray-800 focus:outline-none">
+        <button type="submit" class="bg-indigo-500 hover:bg-indigo-400 px-6 py-2 rounded-r-lg font-bold transition">Search</button>
+    </form>
+</div>
+
+<!-- Re-use the sidebars and grid loop exactly as defined in home.html -->
+{{ block.super }}
+
+{% endblock %}

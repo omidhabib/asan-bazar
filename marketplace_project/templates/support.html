@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ t.HelpSupport }} - AfghaniStore{% endblock %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto py-8 px-4">
+    <h1 class="text-3xl font-extrabold text-gray-900 mb-8 text-center">{{ t.SupportTitle }}</h1>
+
+    <!-- FAQ Section -->
+    <section class="mb-12">
+        <h2 class="text-xl font-bold text-indigo-600 mb-6 flex items-center gap-2">
+            <svg class="w-6 h-6 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+            {{ t.FAQ }}
+        </h2>
+        <div class="space-y-4">
+            <div class="bg-white p-5 rounded-2xl shadow-sm border border-gray-100">
+                <h3 class="font-bold text-gray-800 mb-2">How do I create an account?</h3>
+                <p class="text-sm text-gray-600 leading-relaxed">Simply click the "Register" button in the menu and fill in your details. It only takes a minute!</p>
+            </div>
+            <div class="bg-white p-5 rounded-2xl shadow-sm border border-gray-100">
+                <h3 class="font-bold text-gray-800 mb-2">Is it free to post ads?</h3>
+                <p class="text-sm text-gray-600 leading-relaxed">Yes, posting basic ads is completely free on AfghaniStore.</p>
+            </div>
+            <div class="bg-white p-5 rounded-2xl shadow-sm border border-gray-100">
+                <h3 class="font-bold text-gray-800 mb-2">How can I contact a seller?</h3>
+                <p class="text-sm text-gray-600 leading-relaxed">You can use our built-in chat feature or call the phone number provided in the ad description.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- How to Post Guide -->
+    <section class="mb-12 bg-indigo-50 p-8 rounded-3xl border border-indigo-100">
+        <h2 class="text-xl font-bold text-indigo-700 mb-4 flex items-center gap-2">
+            <svg class="w-6 h-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+            </svg>
+            {{ t.HowToPost }}
+        </h2>
+        <p class="text-indigo-900 mb-6">{{ t.HowToPostContent }}</p>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="flex flex-col items-center text-center p-4 bg-white rounded-2xl shadow-sm">
+                <span class="w-8 h-8 bg-indigo-600 text-white rounded-full flex items-center justify-center font-bold mb-3">1</span>
+                <p class="text-xs font-semibold">Click "Post Ad"</p>
+            </div>
+            <div class="flex flex-col items-center text-center p-4 bg-white rounded-2xl shadow-sm">
+                <span class="w-8 h-8 bg-indigo-600 text-white rounded-full flex items-center justify-center font-bold mb-3">2</span>
+                <p class="text-xs font-semibold">Enter Details</p>
+            </div>
+            <div class="flex flex-col items-center text-center p-4 bg-white rounded-2xl shadow-sm">
+                <span class="w-8 h-8 bg-indigo-600 text-white rounded-full flex items-center justify-center font-bold mb-3">3</span>
+                <p class="text-xs font-semibold">Publish!</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Info -->
+    <section class="text-center">
+        <h2 class="text-xl font-bold text-gray-800 mb-4">{{ t.ContactUs }}</h2>
+        <div class="inline-flex items-center gap-3 px-6 py-3 bg-white rounded-full shadow-sm border border-gray-100 hover:border-indigo-200 transition-all">
+            <svg class="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+            </svg>
+            <a href="mailto:support@afghanistore.com" class="text-sm font-semibold text-gray-700">support@afghanistore.com</a>
+        </div>
+
+        <p class="text-[10px] text-gray-400 mt-4 italic">Our average response time is less than 24 hours.</p>
+    </section>
+</div>
+{% endblock %}
