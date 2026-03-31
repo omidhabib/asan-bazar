@@ -55,7 +55,5 @@ python manage.py migrate
 # Run the server
 python manage.py runserver
 
-![Screenshot T1](screenshots/T1.PNG)
-
-
+![Ana Sayfa](screenshots/3.png)
 
