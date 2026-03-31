@@ -56,38 +56,28 @@ python manage.py migrate
 python manage.py runserver
 
 
-
 ## 📸 Screenshots
 
-### 1
-![Screenshot 1](screenshots/1.png)
+### Login Page
+![Login Page](screenshots/1.png)
 
-### 2
-![Screenshot 2](screenshots/2.png)
+### Product Listing
+![Product Listing](screenshots/2.png)
 
-### 3
-![Screenshot 3](screenshots/3.png)
+### User Profile
+![User Profile](screenshots/3.png)
 
-### 4
+### More Screens
 ![Screenshot 4](screenshots/4.png)
-
-### 5
 ![Screenshot 5](screenshots/5.png)
-
-### 6
 ![Screenshot 6](screenshots/6.png)
-
-### 7
 ![Screenshot 7](screenshots/7.png)
-
-### 8
 ![Screenshot 8](screenshots/8.png)
-
-### 9
 ![Screenshot 9](screenshots/9.png)
-
-### 10
 ![Screenshot 10](screenshots/10.png)
+![Screenshot T1](screenshots/T1.png)
+![Screenshot T2](screenshots/T2.png)
+
 
 ### T1
 ![Screenshot T1](screenshots/T1.png)
