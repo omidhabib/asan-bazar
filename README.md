@@ -49,17 +49,22 @@ venv\Scripts\activate      # Windows
 # Install dependencies
 pip install -r requirements.txt
 
+## 📸 SCREENSHOTS
+---
+
+All screenshots are available in the **screenshots** folder of this repository.  
+Please navigate to that folder to view login, product listing, profile, and other pages.
+
+
+
+
+
 # Apply migrations (SQLite database)
 python manage.py migrate
 
 # Run the server
 python manage.py runserver
 
-
-# 📸 Screenshots
-
-All screenshots are available in the **screenshots** folder of this repository.  
-Please navigate to that folder to view login, product listing, profile, and other pages.
 
 
 
